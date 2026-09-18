@@ -2,7 +2,6 @@
   const nav = document.getElementById("nav");
   const lid = document.getElementById("lid");
   const fold = document.getElementById("fold");
-  const stage = document.getElementById("stage");
   const angleValue = document.getElementById("angle-value");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -30,15 +29,6 @@
 
   applyFold(lid.value);
   lid.addEventListener("input", () => applyFold(lid.value));
-
-  if (!reduce && stage) {
-    stage.addEventListener("pointermove", (event) => {
-      if (event.target === lid) return;
-      const box = stage.getBoundingClientRect();
-      const t = Math.min(1, Math.max(0, (event.clientY - box.top) / box.height));
-      applyFold(100 - t * 92);
-    });
-  }
 
   const scrollToId = (id, behavior) => {
     const el = document.getElementById(id);
