@@ -2,48 +2,12 @@
   const nav = document.getElementById("nav");
   const lid = document.getElementById("lid");
   const fold = document.getElementById("fold");
-  const frame = document.getElementById("laptop");
+  const stage = document.getElementById("stage");
   const angleValue = document.getElementById("angle-value");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const finePointer = window.matchMedia("(pointer: fine)").matches;
-  const earth = document.getElementById("earth");
-
-  if (earth && finePointer && !reduce) {
-    const root = document.documentElement;
-    let targetX = window.innerWidth * 0.5;
-    let targetY = window.innerHeight * 0.62;
-    let x = targetX;
-    let y = targetY;
-    let lit = false;
-
-    const tick = () => {
-      x += (targetX - x) * 0.14;
-      y += (targetY - y) * 0.14;
-      root.style.setProperty("--spot-x", `${x.toFixed(1)}px`);
-      root.style.setProperty("--spot-y", `${y.toFixed(1)}px`);
-      window.requestAnimationFrame(tick);
-    };
-
-    window.addEventListener(
-      "pointermove",
-      (event) => {
-        if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-        targetX = event.clientX;
-        targetY = event.clientY;
-        if (!lit) {
-          x = targetX;
-          y = targetY;
-          lit = true;
-          earth.classList.add("is-lit");
-          tick();
-        }
-      },
-      { passive: true }
-    );
-  }
 
   const onScroll = () => {
-    nav.classList.toggle("is-scrolled", window.scrollY > 16);
+    nav.classList.toggle("is-scrolled", window.scrollY > 12);
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -67,9 +31,10 @@
   applyFold(lid.value);
   lid.addEventListener("input", () => applyFold(lid.value));
 
-  if (!reduce && frame) {
-    frame.addEventListener("pointermove", (event) => {
-      const box = frame.getBoundingClientRect();
+  if (!reduce && stage) {
+    stage.addEventListener("pointermove", (event) => {
+      if (event.target === lid) return;
+      const box = stage.getBoundingClientRect();
       const t = Math.min(1, Math.max(0, (event.clientY - box.top) / box.height));
       applyFold(100 - t * 92);
     });
@@ -97,18 +62,20 @@
     window.setTimeout(() => scrollToId(initial, "auto"), 50);
   }
 
-  const hashEl = document.getElementById("hash");
-  if (hashEl) {
-    fetch("downloads/hinge-gnome.zip.sha256")
+  document.querySelectorAll("[data-sha]").forEach((hashEl) => {
+    const url = hashEl.getAttribute("data-sha");
+    if (!url) return;
+    const label = url.split("/").pop().replace(/\.sha256$/, "");
+    fetch(url)
       .then((res) => (res.ok ? res.text() : Promise.reject()))
       .then((text) => {
         const digest = text.trim().split(/\s+/)[0];
         if (!digest) return;
         hashEl.hidden = false;
-        hashEl.textContent = `SHA-256  ${digest}`;
+        hashEl.textContent = `SHA-256  ${label}  ${digest}`;
       })
       .catch(() => {});
-  }
+  });
 
   document.querySelectorAll(".copy").forEach((button) => {
     button.addEventListener("click", async () => {

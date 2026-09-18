@@ -1,6 +1,9 @@
 extension/schemas/gschemas.compiled
+.build/
 *.zip
 !website/downloads/*.zip
+*.deb
+!website/downloads/*.deb
 __pycache__/
 *.pyc
 .DS_Store

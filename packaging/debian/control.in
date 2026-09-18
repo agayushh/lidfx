@@ -1,0 +1,16 @@
+Package: gnome-shell-extension-lidfx
+Version: @VERSION@
+Section: gnome
+Priority: optional
+Architecture: all
+Installed-Size: @SIZE@
+Depends: gnome-shell (>= 45), python3
+Recommends: python3-numpy, python3-gi, gir1.2-gstreamer-1.0, gstreamer1.0-plugins-good
+Maintainer: Ayush Goyal <126490041+agayushh@users.noreply.github.com>
+Homepage: https://github.com/agayushh/lidfx
+License: MIT
+Description: fold the GNOME desktop with the laptop lid
+ LidFx is a GNOME Shell extension that warps the live wallpaper and
+ windows as you close the lid. It reads a lid-angle sensor, dual
+ accelerometers, or the display IMU, and falls back to the lid webcam
+ on clamshells that have none.

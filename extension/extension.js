@@ -46,12 +46,12 @@ function backgroundGroup() {
     return Main.layoutManager._backgroundGroup ?? Main.layoutManager.backgroundGroup;
 }
 
-const HingeIndicator = GObject.registerClass({
-    GTypeName: 'HingeIndicator',
-}, class HingeIndicator extends PanelMenu.Button {
-    _init(hinge) {
-        super._init(0.5, _('Hinge'));
-        this._hinge = hinge;
+const LidFxIndicator = GObject.registerClass({
+    GTypeName: 'LidFxIndicator',
+}, class LidFxIndicator extends PanelMenu.Button {
+    _init(lidfx) {
+        super._init(0.5, _('LidFx'));
+        this._lidfx = lidfx;
 
         this._icon = new St.Icon({
             icon_name: 'computer-symbolic',
@@ -59,8 +59,8 @@ const HingeIndicator = GObject.registerClass({
         });
         this.add_child(this._icon);
 
-        this._toggle = new PopupMenu.PopupSwitchMenuItem(_('On'), hinge.isOn);
-        this._toggle.connect('toggled', (_item, state) => hinge.setOn(state));
+        this._toggle = new PopupMenu.PopupSwitchMenuItem(_('On'), lidfx.isOn);
+        this._toggle.connect('toggled', (_item, state) => lidfx.setOn(state));
         this.menu.addMenuItem(this._toggle);
 
         this._status = new PopupMenu.PopupMenuItem('', {reactive: false});
@@ -77,18 +77,18 @@ const HingeIndicator = GObject.registerClass({
         this._foldItem.add_child(new St.Label({
             text: _('Fold'),
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'hinge-menu-label',
+            style_class: 'lidfx-menu-label',
         }));
         this._foldSlider = new Slider.Slider(0);
         this._foldSlider.connect('notify::value', slider => {
             if (!this._syncing)
-                hinge.setFoldAmount(slider.value);
+                lidfx.setFoldAmount(slider.value);
         });
         this._foldItem.add_child(this._foldSlider);
         this.menu.addMenuItem(this._foldItem);
 
         this._demo = new PopupMenu.PopupMenuItem(_('Play demo'));
-        this._demo.connect('activate', () => hinge.playDemo());
+        this._demo.connect('activate', () => lidfx.playDemo());
         this.menu.addMenuItem(this._demo);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -97,12 +97,12 @@ const HingeIndicator = GObject.registerClass({
         this._strengthItem.add_child(new St.Label({
             text: _('Strength'),
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'hinge-menu-label',
+            style_class: 'lidfx-menu-label',
         }));
         this._strengthSlider = new Slider.Slider(1);
         this._strengthSlider.connect('notify::value', slider => {
             if (!this._syncing)
-                hinge.setStrength(0.25 + slider.value * 0.75);
+                lidfx.setStrength(0.25 + slider.value * 0.75);
         });
         this._strengthItem.add_child(this._strengthSlider);
         this.menu.addMenuItem(this._strengthItem);
@@ -111,17 +111,17 @@ const HingeIndicator = GObject.registerClass({
         this.menu.addMenuItem(this._openItem);
 
         this._calibrate = new PopupMenu.PopupMenuItem(_('Set open position'));
-        this._calibrate.connect('activate', () => hinge.calibrate());
+        this._calibrate.connect('activate', () => lidfx.calibrate());
         this.menu.addMenuItem(this._calibrate);
 
         this._resync = new PopupMenu.PopupMenuItem(_('Reconnect sensor'));
-        this._resync.connect('activate', () => hinge.reconnectSensor());
+        this._resync.connect('activate', () => lidfx.reconnectSensor());
         this.menu.addMenuItem(this._resync);
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         this._prefs = new PopupMenu.PopupMenuItem(_('Settings…'));
-        this._prefs.connect('activate', () => hinge.openPrefs());
+        this._prefs.connect('activate', () => lidfx.openPrefs());
         this.menu.addMenuItem(this._prefs);
 
         this.sync();
@@ -129,26 +129,26 @@ const HingeIndicator = GObject.registerClass({
 
     sync() {
         this._syncing = true;
-        const hinge = this._hinge;
-        this._toggle.setToggleState(hinge.isOn);
-        this._toggle.setSensitive(!hinge.isStarting);
-        this._status.label.text = hinge.statusText;
-        this._foldItem.visible = !hinge.hasHardwareSensor;
-        this._foldSlider.value = hinge.foldAmount;
-        this._strengthSlider.value = (hinge.strength - 0.25) / 0.75;
-        this._openItem.label.text = `${_('Open position')}: ${Math.round(hinge.openAngle)}°`;
-        this._calibrate.setSensitive(hinge.hasHardwareSensor && !hinge.isStarting);
-        this._resync.setSensitive(!hinge.isStarting);
-        this._icon.icon_name = hinge.isOn && hinge.isClosing
+        const lidfx = this._lidfx;
+        this._toggle.setToggleState(lidfx.isOn);
+        this._toggle.setSensitive(!lidfx.isStarting);
+        this._status.label.text = lidfx.statusText;
+        this._foldItem.visible = !lidfx.hasHardwareSensor;
+        this._foldSlider.value = lidfx.foldAmount;
+        this._strengthSlider.value = (lidfx.strength - 0.25) / 0.75;
+        this._openItem.label.text = `${_('Open position')}: ${Math.round(lidfx.openAngle)}°`;
+        this._calibrate.setSensitive(lidfx.hasHardwareSensor && !lidfx.isStarting);
+        this._resync.setSensitive(!lidfx.isStarting);
+        this._icon.icon_name = lidfx.isOn && lidfx.isClosing
             ? 'computer-symbolic'
             : 'computer-symbolic';
         this._syncing = false;
     }
 });
 
-export default class HingeExtension extends Extension {
+export default class LidFxExtension extends Extension {
     enable() {
-        log('Hinge: enabling');
+        log('LidFx: enabling');
         this._settings = this.getSettings();
         this._effects = [];
         this._signals = [];
@@ -173,8 +173,8 @@ export default class HingeExtension extends Extension {
         this._lidWatch.onOpened = () => this._onLidOpened();
         this._lidWatch.onWake = () => this._onWake();
 
-        this._indicator = new HingeIndicator(this);
-        Main.panel.addToStatusArea('hinge@agayushh.github.io', this._indicator);
+        this._indicator = new LidFxIndicator(this);
+        Main.panel.addToStatusArea('lidfx@agayushh.github.io', this._indicator);
 
         this._bindShortcut();
         this._connect(this._settings, 'changed', (_s, key) => this._onSettings(key));
@@ -195,7 +195,7 @@ export default class HingeExtension extends Extension {
 
         this._syncEnabled();
         this._indicator.sync();
-        log(`Hinge: enabled (sensor=${this._sensor.source}, on=${this.isOn}, lidFold=${this._usesLidSwitchFold()})`);
+        log(`LidFx: enabled (sensor=${this._sensor.source}, on=${this.isOn}, lidFold=${this._usesLidSwitchFold()})`);
     }
 
     disable() {
@@ -304,7 +304,7 @@ export default class HingeExtension extends Extension {
     calibrate() {
         const angle = this._motion.calibrate();
         if (angle == null) {
-            Main.notify(_('Hinge'), _('Open the lid to your comfortable viewing position first.'));
+            Main.notify(_('LidFx'), _('Open the lid to your comfortable viewing position first.'));
             return;
         }
         this._settings.set_double('open-angle', angle);
@@ -315,7 +315,7 @@ export default class HingeExtension extends Extension {
     reconnectSensor() {
         this._sensor?.reconnect();
         this._indicator?.sync();
-        Main.notify(_('Hinge'), _('Looking for a lid or accelerometer sensor…'));
+        Main.notify(_('LidFx'), _('Looking for a lid or accelerometer sensor…'));
     }
 
     playDemo() {
@@ -466,7 +466,7 @@ export default class HingeExtension extends Extension {
         this._motion.setEnabled(true);
         this._startTimeline();
         this._indicator?.sync();
-        log('Hinge: playing lid-close fold');
+        log('LidFx: playing lid-close fold');
     }
 
     _playLidOpen() {
@@ -482,7 +482,7 @@ export default class HingeExtension extends Extension {
         this._startTimeline();
         this._tick();
         this._indicator?.sync();
-        log('Hinge: playing lid-open unfold');
+        log('LidFx: playing lid-open unfold');
     }
 
     _lidAnimAngle(time) {
@@ -645,14 +645,14 @@ export default class HingeExtension extends Extension {
                 const effect = createFoldEffect(shaderDir);
                 if (!effect.compiled)
                     continue;
-                actor.add_effect_with_name('hinge-fold', effect);
+                actor.add_effect_with_name('lidfx-fold', effect);
                 this._effects.push({actor, effect});
             } catch (error) {
-                logError(error, 'Hinge: could not attach fold effect');
+                logError(error, 'LidFx: could not attach fold effect');
             }
         }
         if (this._effects.length)
-            log(`Hinge: attached ${this._effects.length} fold effects`);
+            log(`LidFx: attached ${this._effects.length} fold effects`);
     }
 
     _dropEffects() {
@@ -661,7 +661,7 @@ export default class HingeExtension extends Extension {
                 actor.remove_effect(effect);
             } catch {
                 try {
-                    actor.remove_effect_by_name('hinge-fold');
+                    actor.remove_effect_by_name('lidfx-fold');
                 } catch {
                     // actor already gone
                 }

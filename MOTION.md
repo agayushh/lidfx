@@ -49,8 +49,8 @@ These checks do not measure physical end-to-end latency, which also depends on t
 
 ## Implementation reference
 
-[LidAngleSensor](https://github.com/samhenrigold/LidAngleSensor) supplies the observed HID identifiers and feature-report layout. Hinge reads the little-endian angle through IOKit. Exact native Bendy shader parameters and sensor timing remain unavailable.
+[LidAngleSensor](https://github.com/samhenrigold/LidAngleSensor) supplies the observed HID identifiers and feature-report layout. LidFx reads the little-endian angle through IOKit. Exact native Bendy shader parameters and sensor timing remain unavailable.
 
 ## Recovery
 
-Sensor loss cancels both startup and active capture. Switching Spaces uses the full display frame directly, without enumerating shareable content. Capture restarts only when the display area changes. Wake recovery waits up to five seconds for the sensor, and duplicate wake notifications do not interrupt an active session. Turning Hinge off cancels pending recovery.
+Sensor loss cancels both startup and active capture. Switching Spaces uses the full display frame directly, without enumerating shareable content. Capture restarts only when the display area changes. Wake recovery waits up to five seconds for the sensor, and duplicate wake notifications do not interrupt an active session. Turning LidFx off cancels pending recovery.

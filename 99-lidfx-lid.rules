@@ -1,8 +1,8 @@
 # Allow the seated user to read lid-angle HID devices.
-# Install: sudo cp 99-hinge-lid.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules && sudo udevadm trigger
+# Install: sudo cp 99-lidfx-lid.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules && sudo udevadm trigger
 #
 # Apple MacBook lid-angle sensor (Asahi Linux and similar)
 KERNEL=="hidraw*", ATTRS{idVendor}=="05ac", TAG+="uaccess", MODE="0660", GROUP="plugdev"
-# Intel HID sensor hub (accelerometer / hinge on many Windows convertibles)
+# Intel HID sensor hub (accelerometer / lid-angle on many Windows convertibles)
 KERNEL=="hidraw*", DRIVERS=="hid-sensor-hub", TAG+="uaccess", MODE="0660", GROUP="plugdev"
 KERNEL=="hidraw*", ATTRS{idVendor}=="8086", TAG+="uaccess", MODE="0660", GROUP="plugdev"

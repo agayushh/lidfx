@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Stream laptop lid angle in degrees, one sample per line.
 
-Most laptops have no dedicated hinge chip. This helper reads the display
+Most laptops have no dedicated lid-angle chip. This helper reads the display
 accelerometer and maps gravity to 0–180° (closed → flat), then falls back
-to dual accelerometers, IIO hinge channels, inclinometers, and HID lid-angle
+to dual accelerometers, IIO lid-angle channels, inclinometers, and HID lid-angle
 feature reports.
 
 Laptops with no IMU can still track the lid from the webcam: the camera
@@ -188,13 +188,13 @@ def pitch_yz(ay, az):
     return math.degrees(math.atan2(-az, ay if ay != 0 else 1e-9))
 
 
-def dual_hinge_angle(lid, base):
+def dual_lid_angle(lid, base):
     lid_pitch = pitch_yz(lid[1], lid[2])
     base_pitch = pitch_yz(base[1], base[2])
-    hinge = abs(lid_pitch - base_pitch)
-    if hinge > 180:
-        hinge = 360 - hinge
-    return clamp(hinge, 0.0, 180.0)
+    angle = abs(lid_pitch - base_pitch)
+    if angle > 180:
+        angle = 360 - angle
+    return clamp(angle, 0.0, 180.0)
 
 
 class IioDevice:
@@ -223,7 +223,7 @@ class IioDevice:
             if not name.endswith("_raw") or not name.startswith(prefix):
                 continue
             rest = name[len(prefix) : -len("_raw")]
-            # in_anglvel is a gyroscope. Hinge channels are in_angl or in_angl0.
+            # in_anglvel is a gyroscope. Lid-angle channels are in_angl or in_angl0.
             if prefix == "in_angl" and rest not in ("",) and not rest.isdigit():
                 continue
             files.append(name)
@@ -287,9 +287,9 @@ class IioDevice:
             return None
         return (ax, ay, az)
 
-    def looks_like_hinge(self):
+    def looks_like_lid_angle(self):
         blob = f"{self.name} {self.label} {self.location}".lower()
-        return any(token in blob for token in ("lid", "hinge", "cros-ec-lid-angle"))
+        return any(token in blob for token in ("lid", "cros-ec-lid-angle", "intel-hin"))
 
     def looks_like_lid_accel(self):
         blob = f"{self.name} {self.label} {self.location}".lower()
@@ -599,11 +599,11 @@ def discover_sources(use_camera=False, baseline=100.0, camera_invert=False):
         if not channels:
             continue
         sample = device.read_angle_channel()
-        if sample is None and not device.looks_like_hinge():
+        if sample is None and not device.looks_like_lid_angle():
             continue
         sources.append(
             Source(
-                "iio-hinge",
+                "iio-lid",
                 f"Lid sensor ({device.title})",
                 device.read_angle_channel,
             )
@@ -627,7 +627,7 @@ def discover_sources(use_camera=False, baseline=100.0, camera_invert=False):
             base_vec = base.read_accel()
             if lid_vec is None or base_vec is None:
                 return None
-            return dual_hinge_angle(lid_vec, base_vec)
+            return dual_lid_angle(lid_vec, base_vec)
 
         sources.append(
             Source(
@@ -645,11 +645,11 @@ def discover_sources(use_camera=False, baseline=100.0, camera_invert=False):
             base_vec = base.read_accel()
             if lid_vec is None or base_vec is None:
                 return None
-            return dual_hinge_angle(lid_vec, base_vec)
+            return dual_lid_angle(lid_vec, base_vec)
 
         if dual_reader() is not None:
-            hinge = dual_reader()
-            if hinge is not None and 25.0 <= hinge <= 165.0:
+            lid_angle = dual_reader()
+            if lid_angle is not None and 25.0 <= lid_angle <= 165.0:
                 sources.append(
                     Source(
                         "dual-accel",
@@ -724,19 +724,19 @@ def discover_sources(use_camera=False, baseline=100.0, camera_invert=False):
             sources.append(
                 Source(
                     "camera",
-                    "Webcam lid estimate (camera on while Hinge is on)",
+                    "Webcam lid estimate (camera on while LidFx is on)",
                     camera.read,
                     camera.close,
                 )
             )
         except Exception as exc:
-            sys.stderr.write(f"Hinge: camera unavailable: {exc}\n")
+            sys.stderr.write(f"LidFx: camera unavailable: {exc}\n")
 
     return sources
 
 
 def pick_source(sources):
-    order = ("iio-hinge", "hid", "dual-accel", "accel", "inclinometer", "camera")
+    order = ("iio-lid", "hid", "dual-accel", "accel", "inclinometer", "camera")
     ranked = sorted(sources, key=lambda item: order.index(item.kind) if item.kind in order else 99)
     for source in ranked:
         value = source.read()
@@ -772,7 +772,7 @@ def scan_json(use_camera=False, baseline=100.0, camera_invert=False):
         result = {
             "available": True,
             "source": "camera",
-            "label": "Webcam lid estimate (used while Hinge is on)",
+            "label": "Webcam lid estimate (used while LidFx is on)",
             "angle": None,
             "devices": devices,
             "lid_open": lid_is_open(),
