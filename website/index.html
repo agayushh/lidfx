@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hinge for Linux — Your lid moves. Your desktop follows.</title>
-  <meta name="description" content="A GNOME Shell extension that folds and blurs your live desktop as you close the lid. Hardware hinge, IMU, or webcam. Free and open source.">
+  <title>LidFx for GNOME — Your lid moves. Your desktop follows.</title>
+  <meta name="description" content="A GNOME Shell extension that folds and blurs your live desktop as you close the laptop lid. Hardware lid sensor, IMU, or webcam. Free and open source.">
   <meta name="theme-color" content="#0c0b0a">
   <meta name="color-scheme" content="dark">
-  <meta property="og:title" content="Hinge for Linux">
+  <meta property="og:title" content="LidFx for GNOME">
   <meta property="og:description" content="Your lid moves. Your desktop follows.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/stonehenge-hd-sm.jpg">
@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="apple-touch-icon" href="assets/apple-touch.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="preload" as="image" href="assets/stonehenge-hd.webp" type="image/webp" imagesrcset="assets/stonehenge-2560.webp 2560w, assets/stonehenge-hd.webp 5406w" imagesizes="100vw">
+  <link rel="preload" as="image" href="assets/stonehenge-2560.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter:ital,wght@0,400;0,500;0,600&family=Newsreader:ital,opsz,wght@0,14..72,400;0,14..72,500;1,14..72,400&display=swap" rel="stylesheet">
@@ -24,24 +24,6 @@
 <body>
   <a class="skip" href="#content">Skip to content</a>
 
-  <div class="earth" id="earth" aria-hidden="true">
-    <picture>
-      <source media="(max-width: 720px)" type="image/webp" srcset="assets/stonehenge-hd-sm.webp">
-      <source media="(max-width: 720px)" srcset="assets/stonehenge-hd-sm.jpg">
-      <source type="image/webp" srcset="assets/stonehenge-2560.webp 2560w, assets/stonehenge-hd.webp 5406w" sizes="100vw">
-      <img class="earth__img" src="assets/stonehenge-hd.jpg" alt="" width="5406" height="2379" fetchpriority="high">
-    </picture>
-    <div class="earth__spot">
-      <div class="earth__beam"></div>
-    </div>
-    <svg class="earth__filter" width="0" height="0" aria-hidden="true">
-      <filter id="spot-wobble" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.018 0.028" numOctaves="2" seed="3" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="26" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </svg>
-  </div>
-
   <header class="nav" id="nav">
     <a class="nav__brand" href="#top">
       <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
@@ -49,147 +31,115 @@
         <rect x="14.8" y="13" width="5.2" height="9"/>
         <rect x="3" y="8" width="18" height="3.6"/>
       </svg>
-      Hinge
+      LidFx
     </a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="#geometry">Geometry</a>
-      <a href="#tracking">Tracking</a>
       <a href="#install">Install</a>
-      <a class="nav__download" href="downloads/hinge-gnome.zip" download>Download</a>
+      <a href="https://github.com/agayushh/lidfx">GitHub</a>
+      <a class="nav__download" href="downloads/lidfx.shell-extension.zip" download>Download</a>
     </nav>
   </header>
 
   <main id="content">
     <section class="hero" id="top">
-      <p class="kicker">GNOME Shell extension · 45–48</p>
-      <h1>Your lid moves.<br><span class="h1-line">Your desktop follows.</span></h1>
-      <p class="hero__copy">Close the lid a little. The live wallpaper and windows fold and blur with it. Open up, and everything comes back. Clicks still land on the real layout underneath.</p>
-      <div class="hero__actions">
-        <a class="btn" href="downloads/hinge-gnome.zip" download>Download</a>
-        <a class="text-link" href="#install">Installation&nbsp;&rarr;</a>
+      <div class="hero__copy">
+        <p class="kicker">GNOME Shell extension · 45–48</p>
+        <h1>Your lid moves.<br><span class="h1-line">Your desktop follows.</span></h1>
+        <p class="lede">Close the lid a little. The live wallpaper and windows fold and blur with it. Open up, and everything comes back. Clicks still land on the real layout underneath.</p>
+        <div class="hero__actions">
+          <a class="btn" href="downloads/lidfx.shell-extension.zip" download>Download extension</a>
+          <a class="text-link" href="https://github.com/agayushh/lidfx">Source on GitHub</a>
+        </div>
+        <p class="hero__meta">Free · MIT · Ubuntu 24.04 · <a href="https://github.com/agayushh/lidfx">github.com/agayushh/lidfx</a></p>
       </div>
+
+      <figure class="stage" id="stage">
+        <div class="chrome" aria-hidden="true">
+          <span>Activities</span>
+          <span>LidFx</span>
+          <span>GNOME</span>
+        </div>
+        <div class="viewport">
+          <div class="fold" id="fold">
+            <picture>
+              <source type="image/webp" srcset="assets/stonehenge-2560.webp">
+              <img src="assets/stonehenge-hd-sm.jpg" alt="A GNOME desktop wallpaper folding as the lid closes" width="2560" height="1127">
+            </picture>
+          </div>
+        </div>
+        <figcaption class="stage__bar">
+          <label class="slider" for="lid">
+            <span class="visually-hidden">Lid angle from 8 to 180 degrees</span>
+            <input id="lid" type="range" min="8" max="180" value="72" step="1">
+          </label>
+          <strong id="angle-value">72°</strong>
+        </figcaption>
+      </figure>
     </section>
 
-    <div class="sheet">
-      <section class="block geometry" id="geometry">
-        <header class="block__head">
-          <span class="idx">01</span>
-          <h2>Geometry</h2>
-        </header>
-        <div class="geometry__grid">
-          <div>
-            <p class="lead">The bottom of the desktop stays readable. The top recedes — about 11.5% inset, progressive blur, critically damped follow.</p>
-            <div class="readout">
-              <span>Lid</span>
-              <strong id="angle-value">72°</strong>
-            </div>
-            <label class="slider" for="lid">
-              <span class="visually-hidden">Lid angle from 8 to 180 degrees</span>
-              <input id="lid" type="range" min="8" max="180" value="72" step="1">
-              <span class="slider__ends" aria-hidden="true"><span>Closed</span><span>Open</span></span>
-            </label>
-            <p class="hint">Drag the control, or move over the frame.</p>
-          </div>
-          <figure class="frame" id="laptop">
-            <div class="fold" id="fold">
-              <picture>
-                <source type="image/webp" srcset="assets/stonehenge-2560.webp">
-                <img src="assets/stonehenge-hd-sm.jpg" alt="Stonehenge under a storm sky, used as the folding desktop" width="2560" height="1127">
-              </picture>
-            </div>
-            <figcaption>Live fold · 11.5% top inset</figcaption>
-          </figure>
-        </div>
-      </section>
+    <section class="band" id="tracking">
+      <p>Hardware first. Webcam only on laptops with no IMU. Never on a desktop tower.</p>
+      <ul>
+        <li>IIO lid angle</li>
+        <li>Dual accelerometer</li>
+        <li>Display IMU</li>
+        <li>HID lid angle</li>
+        <li>Lid webcam</li>
+        <li>Lid switch</li>
+      </ul>
+    </section>
 
-      <section class="block tracking" id="tracking">
-        <header class="block__head">
-          <span class="idx">02</span>
-          <h2>Tracking</h2>
-        </header>
-        <p class="lead">The first source that reports a live 0–180° angle wins. A hardware hinge or IMU always beats the webcam. The camera never opens on a desktop tower.</p>
-        <dl class="defs">
-          <div>
-            <dt>IIO hinge</dt>
-            <dd>ChromeOS lid-angle, Intel HID hinge, and other <code>in_angl*</code> channels.</dd>
-          </div>
-          <div>
-            <dt>Dual accelerometer</dt>
-            <dd>Convertibles: the hinge is the angle between lid and base gravity vectors.</dd>
-          </div>
-          <div>
-            <dt>Display IMU</dt>
-            <dd>Closed is 0°. A typical pose is about 100°. Flat is 180°. Gravity from the panel IMU.</dd>
-          </div>
-          <div>
-            <dt>HID lid angle</dt>
-            <dd>Apple HID and other sensor-page lid devices. A udev rule ships in the zip.</dd>
-          </div>
-          <div>
-            <dt>Lid webcam</dt>
-            <dd>No IMU. Vertical shift from the camera in the lid becomes pitch. LED on only while Hinge is on.</dd>
-          </div>
-          <div>
-            <dt>Lid switch</dt>
-            <dd>Binary open or closed. Closing can still play the fold, then sleep.</dd>
-          </div>
-        </dl>
-      </section>
+    <section class="install" id="install">
+      <h2>Install</h2>
+      <p class="install-lead">You do not need to clone the repository. Grab the GNOME extension zip, or a Debian package on Ubuntu. Source lives at <a href="https://github.com/agayushh/lidfx">github.com/agayushh/lidfx</a>.</p>
 
-      <section class="block install" id="install">
-        <header class="block__head">
-          <span class="idx">03</span>
-          <h2>Install</h2>
-        </header>
-        <ol class="steps">
-          <li>
-            <h3>Get the tree</h3>
-            <p>Download the zip, or clone the repository.</p>
-          </li>
-          <li>
-            <h3>Install the extension</h3>
-            <div class="term">
-              <button type="button" class="copy" data-copy="make install && gnome-extensions enable hinge@agayushh.github.io" aria-label="Copy install commands">Copy</button>
-              <pre><code>cd hinge
-make install
-gnome-extensions enable hinge@agayushh.github.io</code></pre>
-            </div>
-          </li>
-          <li>
-            <h3>Log out on Wayland</h3>
-            <p>A first-time install may need a new session. Then open <strong>Hinge</strong> in the top bar and turn it on.</p>
-          </li>
-          <li>
-            <h3>Set open position</h3>
-            <p>Sit comfortably and press <strong>Set open position</strong>. Toggle with <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>H</kbd>.</p>
-          </li>
-        </ol>
-        <p class="note">If a HID lid sensor exists but is not readable, copy <code>99-hinge-lid.rules</code> into <code>/etc/udev/rules.d/</code> and replug. The panel and Ubuntu Dock stay put. Fullscreen games that unredirect are brought back under the compositor while the fold is visible.</p>
-      </section>
-
-      <section class="block get" id="download">
-        <header class="block__head">
-          <span class="idx">04</span>
-          <h2>Take it with you</h2>
-        </header>
-        <p class="lead">The archive is the extension: compositor effect, motion shader, sensor helper, tests, and the udev rule.</p>
-        <a class="dl" href="downloads/hinge-gnome.zip" download id="download-btn">
-          <span class="dl__name">Download Hinge</span>
-          <span class="dl__meta">hinge-gnome.zip · GNOME 45–48</span>
+      <div class="downloads">
+        <a class="dl" href="downloads/lidfx.shell-extension.zip" download id="download-btn">
+          <span class="dl__kind">GNOME extension</span>
+          <span class="dl__name">Download zip</span>
+          <span class="dl__meta">lidfx.shell-extension.zip · GNOME 45–48 · no sudo</span>
         </a>
-        <div class="term term--flush">
-          <button type="button" class="copy" data-copy="git clone https://github.com/agayushh/hinge.git" aria-label="Copy git clone command">Copy</button>
-          <pre><code>git clone https://github.com/agayushh/hinge.git</code></pre>
-        </div>
-        <p class="hash" id="hash" hidden></p>
-      </section>
+        <a class="dl" href="downloads/gnome-shell-extension-lidfx_5_all.deb" download>
+          <span class="dl__kind">Ubuntu / Debian</span>
+          <span class="dl__name">Download .deb</span>
+          <span class="dl__meta">gnome-shell-extension-lidfx_5_all.deb · includes the udev rule</span>
+        </a>
+      </div>
 
-      <footer class="foot">
-        <p>Hinge is a GNOME Shell extension by <a href="https://github.com/agayushh">agayushh</a>. MIT License. © 2026 Ayush Goyal. Source on <a href="https://github.com/agayushh/hinge">GitHub</a>.</p>
-        <p>Photograph: <a href="https://commons.wikimedia.org/wiki/File:Stonehenge,_Condado_de_Wiltshire,_Inglaterra,_2014-08-12,_DD_09.JPG">Diego Delso</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
-      </footer>
-    </div>
+      <ol class="steps">
+        <li>
+          <h3>Install the file</h3>
+          <p>Extension zip — from the folder you saved it to, or with Extensions → Install from File…</p>
+          <div class="term">
+            <button type="button" class="copy" data-copy="gnome-extensions install --force lidfx.shell-extension.zip" aria-label="Copy GNOME install command">Copy</button>
+            <pre><code>gnome-extensions install --force lidfx.shell-extension.zip</code></pre>
+          </div>
+          <p class="cmd-alt">Debian package — install from a terminal. Ubuntu App Center will warn that this is a third-party package; that is expected for any .deb that is not in the Ubuntu archive.</p>
+          <div class="term">
+            <button type="button" class="copy" data-copy="sudo apt install ./gnome-shell-extension-lidfx_5_all.deb" aria-label="Copy Debian install command">Copy</button>
+            <pre><code>sudo apt install ./gnome-shell-extension-lidfx_5_all.deb</code></pre>
+          </div>
+        </li>
+        <li>
+          <h3>Turn it on</h3>
+          <p>On Wayland, log out once, then enable the extension:</p>
+          <div class="term">
+            <button type="button" class="copy" data-copy="gnome-extensions enable lidfx@agayushh.github.io" aria-label="Copy enable command">Copy</button>
+            <pre><code>gnome-extensions enable lidfx@agayushh.github.io</code></pre>
+          </div>
+          <p>Open <strong>LidFx</strong> in the top bar, turn it on, then <strong>Set open position</strong>. Toggle with <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>H</kbd>.</p>
+        </li>
+      </ol>
+      <p class="hash" data-sha="downloads/lidfx.shell-extension.zip.sha256" hidden></p>
+      <p class="hash" data-sha="downloads/gnome-shell-extension-lidfx_5_all.deb.sha256" hidden></p>
+      <p class="note">From source: <code>git clone https://github.com/agayushh/lidfx.git</code> then <code>make install</code>. If a HID lid sensor exists but is not readable, copy <code>99-lidfx-lid.rules</code> into <code>/etc/udev/rules.d/</code> and replug — the .deb already does this. The panel and Ubuntu Dock stay put.</p>
+    </section>
   </main>
+
+  <footer class="foot">
+    <p>LidFx is a GNOME Shell extension by <a href="https://github.com/agayushh">agayushh</a>. Source: <a href="https://github.com/agayushh/lidfx">github.com/agayushh/lidfx</a>. MIT License. © 2026 Ayush Goyal.</p>
+    <p>Stage photograph: <a href="https://commons.wikimedia.org/wiki/File:Stonehenge,_Condado_de_Wiltshire,_Inglaterra,_2014-08-12,_DD_09.JPG">Diego Delso</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+  </footer>
 
   <script src="app.js" defer></script>
 </body>

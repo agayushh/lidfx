@@ -1,6 +1,6 @@
 {
-  "name": "Hinge for Linux",
-  "short_name": "Hinge",
+  "name": "LidFx for Linux",
+  "short_name": "LidFx",
   "description": "Your lid moves. Your desktop follows.",
   "start_url": ".",
   "display": "standalone",
