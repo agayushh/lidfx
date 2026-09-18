@@ -15,7 +15,7 @@ function loadShader(dir) {
 }
 
 export const FoldEffect = GObject.registerClass({
-    GTypeName: 'HingeFoldEffect',
+    GTypeName: 'LidFxFoldEffect',
 }, class FoldEffect extends Clutter.ShaderEffect {
     _init(shaderSource) {
         super._init();
@@ -29,7 +29,7 @@ export const FoldEffect = GObject.registerClass({
             }
             this.setFold(0, 1, 1);
         } else {
-            logError(new Error('fold shader failed to compile'), 'Hinge');
+            logError(new Error('fold shader failed to compile'), 'LidFx');
         }
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="org.gnome.shell.extensions.hinge" path="/org/gnome/shell/extensions/hinge/">
+  <schema id="org.gnome.shell.extensions.lidfx" path="/org/gnome/shell/extensions/lidfx/">
     <key name="effect-on" type="b">
       <default>false</default>
       <summary>Effect enabled</summary>
@@ -31,7 +31,7 @@
     </key>
     <key name="toggle-shortcut" type="as">
       <default><![CDATA[['<Control><Alt>h']]]></default>
-      <summary>Keyboard shortcut to toggle Hinge</summary>
+      <summary>Keyboard shortcut to toggle LidFx</summary>
     </key>
   </schema>
 </schemalist>

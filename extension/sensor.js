@@ -179,7 +179,7 @@ export class LidSensor {
         const generation = ++this._scanGeneration;
         if (this._startAutoHelper())
             return;
-        if (this._scanIioHinge() || this._scanIioAccel()) {
+        if (this._scanIioLidAngle() || this._scanIioAccel()) {
             this._armTimer();
             return;
         }
@@ -240,9 +240,9 @@ export class LidSensor {
                     this._stopHelper();
                     if (this.source === 'pending' || this.source === 'hid' ||
                         this.source === 'accel' || this.source === 'dual-accel' ||
-                        this.source === 'iio-hinge' || this.source === 'inclinometer' ||
+                        this.source === 'iio-lid' || this.source === 'intel-lid' || this.source === 'inclinometer' ||
                         this.source === 'camera' || this.source === 'helper') {
-                        if (!this._scanIioHinge() && !this._scanIioAccel()) {
+                        if (!this._scanIioLidAngle() && !this._scanIioAccel()) {
                             this.source = 'none';
                             this.label = 'No lid sensor';
                             this._emit(null);
@@ -322,17 +322,16 @@ export class LidSensor {
         this._helperOut = null;
     }
 
-    _scanIioHinge() {
+    _scanIioLidAngle() {
         for (const name of listDir(IIO_ROOT)) {
             if (!name.startsWith('iio:device'))
                 continue;
             const base = `${IIO_ROOT}/${name}`;
             const deviceName = (readText(`${base}/name`) || '').toLowerCase();
             const label = (readText(`${base}/label`) || '').toLowerCase();
-            const isLid = deviceName.includes('lid') || deviceName.includes('hinge') ||
-                deviceName.includes('cros-ec-lid-angle') ||
-                deviceName.includes('hid-sensor-custom-intel-hinge') ||
-                label.includes('lid') || label.includes('hinge');
+            const isLid = deviceName.includes('lid') || deviceName.includes('cros-ec-lid-angle') ||
+                deviceName.includes('hid-sensor-custom-intel-hin') ||
+                label.includes('lid');
             const channels = [];
             for (const file of listDir(base)) {
                 if (/^in_angl(?:[0-9]+)?_raw$/.test(file))
@@ -353,7 +352,7 @@ export class LidSensor {
             if (angle < 0 || angle > 360)
                 continue;
             this._iio = {kind: 'angle', base, rawFile, scale, offset};
-            this.source = deviceName.includes('hinge') ? 'intel-hinge' : 'iio';
+            this.source = deviceName.includes('intel') ? 'intel-lid' : 'iio-lid';
             this.label = `Lid sensor (${deviceName || name})`;
             return true;
         }

@@ -16,7 +16,7 @@ def near(value, expected, slack=1.5):
 
 
 def test_windows_mapping():
-    # Closed, upright, and flat — same gravity cases as hinge-windows.
+    # Closed, upright, and flat — same gravity cases as the Windows lid-angle mapping.
     near(helper.angle_from_yz(0.0, 1.0), 0.0)
     near(helper.angle_from_yz(-0.94, -0.10), 96.1)
     near(helper.angle_from_yz(0.0, -1.0), 180.0)
@@ -29,13 +29,13 @@ def test_axis_picker_prefers_viewing_angle():
         raise SystemExit(f"open-lid mapping {mapping} produced {angle}")
 
 
-def test_dual_hinge():
+def test_dual_lid_angle():
     # Lid upright, base flat on a desk.
     lid = (0.0, -0.94, -0.10)
     base = (0.0, 0.0, -1.0)
-    angle = helper.dual_hinge_angle(lid, base)
+    angle = helper.dual_lid_angle(lid, base)
     if not 70 <= angle <= 120:
-        raise SystemExit(f"dual hinge expected ~90°, got {angle}")
+        raise SystemExit(f"dual lid angle expected ~90°, got {angle}")
 
 
 def test_vertical_shift_content_down():
@@ -75,15 +75,15 @@ def test_portable_chassis():
 def test_dual_unlabeled_rejected_when_parallel():
     lid = (0.0, 0.0, -1.0)
     base = (0.0, 0.0, -1.0)
-    angle = helper.dual_hinge_angle(lid, base)
+    angle = helper.dual_lid_angle(lid, base)
     if angle >= 25:
-        raise SystemExit(f"parallel accels should not look like an open hinge, got {angle}")
+        raise SystemExit(f"parallel accels should not look like an open lid, got {angle}")
 
 
 if __name__ == "__main__":
     test_windows_mapping()
     test_axis_picker_prefers_viewing_angle()
-    test_dual_hinge()
+    test_dual_lid_angle()
     test_vertical_shift_content_down()
     test_vertical_shift_still_frame()
     test_portable_chassis()

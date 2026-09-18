@@ -66,7 +66,7 @@ export class LidWatch {
                 LOGIN1_PATH,
                 LOGIN1_IFACE,
                 'Inhibit',
-                new GLib.Variant('(ssss)', [what, 'Hinge', why, mode]),
+                new GLib.Variant('(ssss)', [what, 'LidFx', why, mode]),
                 GLib.VariantType.new('(h)'),
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -75,10 +75,10 @@ export class LidWatch {
             const [index] = variant.deep_unpack();
             const fd = fdList.get(index);
             this._inhibitStream = Gio.UnixInputStream.new(fd, true);
-            log(`Hinge: acquired ${mode} inhibit for ${what}`);
+            log(`LidFx: acquired ${mode} inhibit for ${what}`);
             return true;
         } catch (error) {
-            logError(error, `Hinge: could not inhibit ${what}`);
+            logError(error, `LidFx: could not inhibit ${what}`);
             return false;
         }
     }
@@ -92,7 +92,7 @@ export class LidWatch {
             // already closed
         }
         this._inhibitStream = null;
-        log('Hinge: released lid-switch inhibit');
+        log('LidFx: released lid-switch inhibit');
     }
 
     _subscribe() {
@@ -187,7 +187,7 @@ export class LidWatch {
             return;
         this._closed = closed;
         this.closed = closed;
-        log(`Hinge: lid ${closed ? 'closed' : 'opened'}`);
+        log(`LidFx: lid ${closed ? 'closed' : 'opened'}`);
         if (closed)
             this.onClosed?.();
         else

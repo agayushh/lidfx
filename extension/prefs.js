@@ -16,7 +16,7 @@ function spawnScan(helperPath) {
     }
 }
 
-export default class HingePreferences extends ExtensionPreferences {
+export default class LidFxPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window.set_default_size(420, 640);
         const settings = this.getSettings();
@@ -24,12 +24,12 @@ export default class HingePreferences extends ExtensionPreferences {
         const scan = spawnScan(helper);
 
         const page = new Adw.PreferencesPage({
-            title: _('Hinge'),
+            title: _('LidFx'),
             icon_name: 'computer-symbolic',
         });
 
         const intro = new Adw.PreferencesGroup({
-            title: _('Hinge'),
+            title: _('LidFx'),
             description: _('Your desktop follows your lid.'),
         });
 
@@ -46,12 +46,12 @@ export default class HingePreferences extends ExtensionPreferences {
             title: _('Detected'),
             subtitle: scan?.available
                 ? `${scan.label}${scan.angle != null ? ` · ${Math.round(scan.angle)}°` : ''}`
-                : _('No hinge, accelerometer, or lid webcam is available'),
+                : _('No lid-angle sensor, accelerometer, or lid webcam is available'),
         });
         sensor.add(detected);
         const camera = new Adw.SwitchRow({
             title: _('Estimate lid angle from the webcam'),
-            subtitle: _('Fallback on laptops with no hinge or accelerometer. The camera LED stays on while Hinge is on.'),
+            subtitle: _('Fallback on laptops with no lid-angle sensor or accelerometer. The camera LED stays on while LidFx is on.'),
         });
         settings.bind('camera-estimate', camera, 'active', Gio.SettingsBindFlags.DEFAULT);
         sensor.add(camera);
@@ -73,7 +73,7 @@ export default class HingePreferences extends ExtensionPreferences {
         });
         const strength = new Adw.SpinRow({
             title: _('Effect strength'),
-            subtitle: _('100% matches the original Hinge fold'),
+            subtitle: _('100% is the full fold'),
             adjustment: strengthAdj,
             digits: 0,
         });
@@ -114,12 +114,12 @@ export default class HingePreferences extends ExtensionPreferences {
         look.add(open);
         page.add(look);
 
-        const hardware = ['iio-hinge', 'dual-accel', 'hid', 'accel', 'inclinometer'].includes(scan?.source);
+        const hardware = ['iio-lid', 'intel-lid', 'dual-accel', 'hid', 'accel', 'inclinometer'].includes(scan?.source);
         const input = new Adw.PreferencesGroup({
             title: _('Lid'),
             description: hardware
                 ? _('A hardware sensor is driving the fold. Set your open position from the top-bar menu, then close the lid to follow it.')
-                : _('If no hinge chip is present, Hinge can estimate the angle from the built-in webcam, or fold on lid close / the Fold slider.'),
+                : _('If no lid-angle sensor is present, LidFx can estimate the angle from the built-in webcam, or fold on lid close / the Fold slider.'),
         });
         const lidSwitch = new Adw.SwitchRow({
             title: _('Fold on lid close'),
@@ -154,7 +154,7 @@ export default class HingePreferences extends ExtensionPreferences {
 
         const keys = new Adw.PreferencesGroup({title: _('Keyboard')});
         const shortcut = new Adw.ActionRow({
-            title: _('Toggle Hinge'),
+            title: _('Toggle LidFx'),
             subtitle: _('Ctrl+Alt+H'),
         });
         keys.add(shortcut);
