@@ -1,0 +1,9 @@
+{
+  "uuid": "hinge@agayushh.github.io",
+  "name": "Hinge",
+  "description": "Your desktop follows your lid. Reads a hinge sensor, dual accelerometers, or the display IMU, and falls back to the lid webcam on clamshells that have none. Otherwise use Fold, a demo, or lid-close.",
+  "shell-version": ["45", "46", "47", "48"],
+  "url": "https://github.com/agayushh/hinge",
+  "settings-schema": "org.gnome.shell.extensions.hinge",
+  "version": 5
+}
