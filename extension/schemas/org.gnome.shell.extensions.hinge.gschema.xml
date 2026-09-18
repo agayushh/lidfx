@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.hinge" path="/org/gnome/shell/extensions/hinge/">
+    <key name="effect-on" type="b">
+      <default>false</default>
+      <summary>Effect enabled</summary>
+    </key>
+    <key name="open-angle" type="d">
+      <default>100</default>
+      <summary>Calibrated open lid angle in degrees</summary>
+    </key>
+    <key name="effect-strength" type="d">
+      <default>1.0</default>
+      <summary>Effect strength from 0.25 to 1.0</summary>
+    </key>
+    <key name="virtual-angle" type="d">
+      <default>100</default>
+      <summary>Manual lid angle used when no hardware sensor is present</summary>
+    </key>
+    <key name="lid-switch-fold" type="b">
+      <default>true</default>
+      <summary>Play the fold when the lid switch closes, then sleep</summary>
+    </key>
+    <key name="camera-estimate" type="b">
+      <default>true</default>
+      <summary>Estimate lid angle from the webcam when no IMU is present</summary>
+    </key>
+    <key name="camera-invert" type="b">
+      <default>false</default>
+      <summary>Invert webcam lid direction if closing the lid opens the fold</summary>
+    </key>
+    <key name="toggle-shortcut" type="as">
+      <default><![CDATA[['<Control><Alt>h']]]></default>
+      <summary>Keyboard shortcut to toggle Hinge</summary>
+    </key>
+  </schema>
+</schemalist>
