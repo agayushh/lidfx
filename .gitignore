@@ -1,0 +1,6 @@
+extension/schemas/gschemas.compiled
+*.zip
+!website/downloads/*.zip
+__pycache__/
+*.pyc
+.DS_Store
